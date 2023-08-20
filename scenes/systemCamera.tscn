@@ -1,0 +1,17 @@
+[gd_scene load_steps=3 format=3 uid="uid://cbq6h6jdffwbw"]
+
+[ext_resource type="Script" path="res://scripts/Camera.cs" id="1_j4h62"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_x6ifq"]
+radius = 1.0
+
+[node name="Camera2D" type="Camera2D" node_paths=PackedStringArray("Following")]
+position = Vector2(578, 324)
+script = ExtResource("1_j4h62")
+Following = NodePath("")
+
+[node name="Collision" type="Area2D" parent="."]
+collision_layer = 0
+
+[node name="Collision" type="CollisionShape2D" parent="Collision"]
+shape = SubResource("CircleShape2D_x6ifq")
