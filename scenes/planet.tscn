@@ -1,9 +1,11 @@
-[gd_scene load_steps=4 format=3 uid="uid://c4oyas75qon0s"]
+[gd_scene load_steps=5 format=3 uid="uid://c4oyas75qon0s"]
 
 [ext_resource type="Script" path="res://scripts/Planet.cs" id="1_35khr"]
+[ext_resource type="Script" path="res://scripts/PathRenderer.cs" id="2_awd73"]
 
 [sub_resource type="SystemFont" id="SystemFont_ht4cq"]
 font_names = PackedStringArray("Minecraft")
+subpixel_positioning = 0
 
 [sub_resource type="LabelSettings" id="LabelSettings_xulhh"]
 line_spacing = 0.0
@@ -15,11 +17,15 @@ outline_color = Color(0, 0, 0, 1)
 script = ExtResource("1_35khr")
 Mass = 1.0
 
+[node name="PathRenderer" type="Node2D" parent="."]
+script = ExtResource("2_awd73")
+VertexFrequency = 0.1
+
 [node name="Label" type="Label" parent="."]
 offset_left = -113.0
-offset_top = -89.0
+offset_top = -73.0
 offset_right = 113.0
-offset_bottom = 58.0
+offset_bottom = 74.0
 label_settings = SubResource("LabelSettings_xulhh")
 horizontal_alignment = 1
 vertical_alignment = 1

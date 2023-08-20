@@ -20,8 +20,18 @@ System = NodePath("..")
 [node name="Sun" parent="System" instance=ExtResource("1_wlfdw")]
 position = Vector2(572, 300)
 Mass = 1e+06
+Title = "Sol"
+
+[node name="PathRenderer" parent="System/Sun" index="0"]
+MaxVerticies = 50
+VertexFrequency = 1.0
+Width = 0.5
+
+[node name="Label" parent="System/Sun" index="1"]
+text = "Sol"
 
 [node name="Sprite2D" type="Sprite2D" parent="System/Sun"]
+visible = false
 scale = Vector2(1.2, 1.2)
 texture = ExtResource("3_5o085")
 
@@ -30,13 +40,23 @@ position = Vector2(670, 300)
 Motion = Vector2(0, 250)
 Mass = 10.0
 Title = "Icarus"
-PointCount = 20
+
+[node name="PathRenderer" parent="System/Icarus" index="0"]
+MaxVerticies = 25
+
+[node name="Label" parent="System/Icarus" index="1"]
+text = "Icarus"
 
 [node name="Loimu" parent="System" instance=ExtResource("1_wlfdw")]
 position = Vector2(800, 300)
 Motion = Vector2(0, 150)
 Title = "Loimu"
-PointCount = 60
+
+[node name="PathRenderer" parent="System/Loimu" index="0"]
+MaxVerticies = 75
+
+[node name="Label" parent="System/Loimu" index="1"]
+text = "Loimu"
 
 [node name="Sprite2D" type="Sprite2D" parent="System/Loimu"]
 visible = false
@@ -49,7 +69,13 @@ position = Vector2(0, 300)
 Motion = Vector2(0, -100)
 Mass = 100.0
 Title = "Kanjon"
-PointCount = 320
+
+[node name="PathRenderer" parent="System/Kanjon" index="0"]
+MaxVerticies = 320
+Width = 10.0
+
+[node name="Label" parent="System/Kanjon" index="1"]
+text = "Kanjon"
 
 [node name="Sprite2D" type="Sprite2D" parent="System/Kanjon"]
 visible = false
@@ -62,4 +88,16 @@ position = Vector2(1465, 300)
 Motion = Vector2(0, 85)
 Mass = 10000.0
 Title = "Alagada"
-PointCount = 1000
+
+[node name="PathRenderer" parent="System/Alagada" index="0"]
+MaxVerticies = 800
+Width = 20.0
+
+[node name="Label" parent="System/Alagada" index="1"]
+text = "Alagada"
+
+[editable path="System/Sun"]
+[editable path="System/Icarus"]
+[editable path="System/Loimu"]
+[editable path="System/Kanjon"]
+[editable path="System/Alagada"]

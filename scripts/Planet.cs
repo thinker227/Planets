@@ -11,10 +11,6 @@ public partial class Planet : Node2D
 {
     private SolarSystem? system = null;
     private Label label = null!;
-    private List<Vector2> drawPoints = null!;
-    private int pointCount = 100;
-    private float drawTimer = 0f;
-    private const float Frequency = 0.1f;
 
 
     [Export]
@@ -29,24 +25,10 @@ public partial class Planet : Node2D
     [Export]
     public required string Title { get; set; }
 
-    [Export]
-    public int PointCount
-    {
-        get => pointCount;
-        set
-        {
-            if (drawPoints?.Count > value)
-                drawPoints.RemoveRange(0, drawPoints.Count - value);
-
-            pointCount = value;
-        }
-    }
-
     public override void _Ready()
     {
         system = NodeUtility.GetAncestor<SolarSystem>(this);
         label = GetNode<Label>("Label");
-        drawPoints = new(pointCount);
 
         label.Text = Title;
 
@@ -62,13 +44,10 @@ public partial class Planet : Node2D
             return;
         }
 
-        drawTimer += (float)delta;
-        if (drawTimer >= Frequency)
+        if (system is not null)
         {
-            drawTimer = 0f;
-
-            if (drawPoints.Count > pointCount) drawPoints.RemoveAt(0);
-            drawPoints.Add(GlobalPosition);
+            label.LabelSettings.FontSize = (int)(32 / system.Camera.Zoom.X);
+            label.LabelSettings.OutlineSize = (int)(8 / system.Camera.Zoom.X);
         }
 
         QueueRedraw();
@@ -134,24 +113,6 @@ public partial class Planet : Node2D
 
     public override void _Draw()
     {
-        if (!Engine.IsEditorHint())
-        {
-            var count = drawPoints.Count;
-            for (var i = 1; i < count; i++)
-            {
-                var a = drawPoints[i - 1];
-                var b = drawPoints[i];
-
-                var alpha = i / (float)count;
-
-                DrawLine(
-                    a - GlobalPosition,
-                    b - GlobalPosition,
-                    new(1, 1, 1, alpha),
-                    5);
-            }
-        }
-
         if (system is null) return;
         if (!Engine.IsEditorHint() && system.Camera.Following != this) return;
 
