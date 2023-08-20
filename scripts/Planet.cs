@@ -6,8 +6,14 @@ public enum GravityFalloff
     InverseLinear,
 }
 
+public interface IPlanet
+{
+    float Mass { get; }
+    Vector2 Position { get; }
+}
+
 [Tool]
-public partial class Planet : Node2D
+public partial class Planet : Node2D, IPlanet
 {
     private SolarSystem? system = null;
     private Label label = null!;
@@ -24,6 +30,8 @@ public partial class Planet : Node2D
 
     [Export]
     public required string Title { get; set; }
+
+    Vector2 IPlanet.Position => GlobalPosition;
 
     public override void _Ready()
     {
@@ -68,8 +76,8 @@ public partial class Planet : Node2D
     }
 
     public static Vector2 CalculateMotion(
-        Planet planet,
-        IEnumerable<Planet> attractors,
+        IPlanet planet,
+        IEnumerable<IPlanet> attractors,
         float gravity,
         GravityFalloff mode,
         float timeDelta)
@@ -79,8 +87,8 @@ public partial class Planet : Node2D
         foreach (var attractor in attractors)
         {
             var force = CalculateForce(
-                (planet.GlobalPosition, planet.Mass),
-                (attractor.GlobalPosition, attractor.Mass),
+                (planet.Position, planet.Mass),
+                (attractor.Position, attractor.Mass),
                 gravity,
                 mode);
 
