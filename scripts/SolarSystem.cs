@@ -5,10 +5,6 @@ public partial class SolarSystem : Node2D
 {
     private readonly List<Planet> planets = new();
     private Camera camera = null!;
-    
-    private SimulatedPlanet[] simulatedPlanets = null!;
-    private PhysPlanet[] physPlanets = null!;
-    private Vector2[][] simPoints = null!;
 
     [Export]
 	public required float Gravity { get; set; }
@@ -25,16 +21,6 @@ public partial class SolarSystem : Node2D
         camera = GetNode<Camera>("SystemCamera");
 
         AddPlanetDescendantsOfNode(this);
-
-        if (Simulation is not null)
-        {
-            simulatedPlanets = new SimulatedPlanet[Planets.Count];
-            physPlanets = new PhysPlanet[Planets.Count];
-            simPoints = new Vector2[Planets.Count][];
-
-            for (var i = 0; i < simPoints.Length; i++)
-                simPoints[i] = new Vector2[Simulation.Steps];
-        }
     }
 
     private void AddPlanetDescendantsOfNode(Node node)
@@ -57,12 +43,17 @@ public partial class SolarSystem : Node2D
     {
         if (Simulation is null) return;
 
+        var simulatedPlanets = (Span<SimulatedPlanet>)stackalloc SimulatedPlanet[Planets.Count];
+        var physPlanets = new PhysPlanet[Planets.Count];
+        var simPoints = new Vector2[Planets.Count][];
+
         // Initialize simulated planets.
         for (var i = 0; i < planets.Count; i++)
         {
             var planet = Planets[i];
             simulatedPlanets[i] = new(planet);
             physPlanets[i] = new(planet.GlobalPosition, planet.Mass);
+            simPoints[i] = new Vector2[Simulation.Steps];
         }
 
         for (var step = 0; step < Simulation.Steps; step++)
