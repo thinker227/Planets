@@ -93,6 +93,8 @@ public partial class SolarSystem : Node2D
         {
             for (var i = 0; i < planets.Count; i++)
             {
+                if (!planets[i].Visible) continue;
+
                 var from = simPoints[i][step - 1];
                 var to = simPoints[i][step];
 
