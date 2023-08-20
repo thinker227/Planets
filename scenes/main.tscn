@@ -100,10 +100,17 @@ text = "Alagada"
 position = Vector2(-43, 300)
 Motion = Vector2(0, -75)
 Mass = 0.001
-Title = "Moon"
+Title = "Mt."
+
+[node name="PathRenderer" parent="System/Moon" index="0" node_paths=PackedStringArray("RelativeTo")]
+RelativeTo = NodePath("../../Kanjon")
+
+[node name="Label" parent="System/Moon" index="1"]
+text = "Moon"
 
 [editable path="System/Sun"]
 [editable path="System/Icarus"]
 [editable path="System/Loimu"]
 [editable path="System/Kanjon"]
 [editable path="System/Alagada"]
+[editable path="System/Moon"]
