@@ -74,7 +74,7 @@ Title = "Mt."
 RelativeTo = NodePath("../../Kanjon")
 
 [node name="Label" parent="System/Moon" index="1"]
-text = "Moon"
+text = "Mt."
 
 [node name="Kanjon" parent="System" instance=ExtResource("1_wlfdw")]
 position = Vector2(0, 300)
