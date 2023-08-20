@@ -30,7 +30,7 @@ public partial class Planet : Node2D, IPlanet
     public GravityFalloff Falloff { get; set; } = GravityFalloff.InverseSquare;
 
     [Export]
-    public required string Title { get; set; }
+    public string? Title { get; set; }
 
     Vector2 IPlanet.Position => GlobalPosition;
 
@@ -39,7 +39,7 @@ public partial class Planet : Node2D, IPlanet
         system = NodeUtility.GetAncestor<SolarSystem>(this);
         label = GetNode<Label>("Label");
 
-        label.Text = Title;
+        label.Text = Title ?? "";
 
         if (system is null && !Engine.IsEditorHint())
             GD.PushWarning("Planet system is null.");
