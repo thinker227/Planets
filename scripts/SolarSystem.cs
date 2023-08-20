@@ -34,14 +34,14 @@ public partial class SolarSystem : Node2D
 
     public override void _Process(double delta)
     {
-        if (Simulation is null) return;
+        if (!Engine.IsEditorHint() || Simulation is null) return;
 
         QueueRedraw();
     }
 
     public override void _Draw()
     {
-        if (Simulation is null) return;
+        if (!Engine.IsEditorHint() || Simulation is null) return;
 
         var simulatedPlanets = (Span<SimulatedPlanet>)stackalloc SimulatedPlanet[Planets.Count];
         var physPlanets = new PhysPlanet[Planets.Count];
