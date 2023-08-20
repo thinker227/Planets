@@ -6,16 +6,10 @@ public enum GravityFalloff
     InverseLinear,
 }
 
-public interface IPlanet
-{
-    float Mass { get; }
-    Vector2 Position { get; }
-}
-
 public readonly record struct PhysPlanet(Vector2 Position, float Mass);
 
 [Tool]
-public partial class Planet : Node2D, IPlanet
+public partial class Planet : Node2D
 {
     private SolarSystem? system = null;
     private Label label = null!;
@@ -33,8 +27,6 @@ public partial class Planet : Node2D, IPlanet
 
     [Export]
     public string? Title { get; set; }
-
-    Vector2 IPlanet.Position => GlobalPosition;
 
     public override void _Ready()
     {
