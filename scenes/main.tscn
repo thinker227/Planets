@@ -64,6 +64,18 @@ scale = Vector2(0.25, 0.25)
 texture = ExtResource("3_5o085")
 metadata/_edit_lock_ = true
 
+[node name="Moon" parent="System" instance=ExtResource("1_wlfdw")]
+position = Vector2(-43, 300)
+Motion = Vector2(0, -75)
+Mass = 0.001
+Title = "Mt."
+
+[node name="PathRenderer" parent="System/Moon" index="0" node_paths=PackedStringArray("RelativeTo")]
+RelativeTo = NodePath("../../Kanjon")
+
+[node name="Label" parent="System/Moon" index="1"]
+text = "Moon"
+
 [node name="Kanjon" parent="System" instance=ExtResource("1_wlfdw")]
 position = Vector2(0, 300)
 Motion = Vector2(0, -100)
@@ -96,21 +108,9 @@ Width = 20.0
 [node name="Label" parent="System/Alagada" index="1"]
 text = "Alagada"
 
-[node name="Moon" parent="System" instance=ExtResource("1_wlfdw")]
-position = Vector2(-43, 300)
-Motion = Vector2(0, -75)
-Mass = 0.001
-Title = "Mt."
-
-[node name="PathRenderer" parent="System/Moon" index="0" node_paths=PackedStringArray("RelativeTo")]
-RelativeTo = NodePath("../../Kanjon")
-
-[node name="Label" parent="System/Moon" index="1"]
-text = "Moon"
-
 [editable path="System/Sun"]
 [editable path="System/Icarus"]
 [editable path="System/Loimu"]
+[editable path="System/Moon"]
 [editable path="System/Kanjon"]
 [editable path="System/Alagada"]
-[editable path="System/Moon"]
