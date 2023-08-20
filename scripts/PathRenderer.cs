@@ -28,6 +28,9 @@ public partial class PathRenderer : Node2D
     [Export(PropertyHint.Range, "0,1000,or_greater")]
     public float Width { get; set; } = 3;
 
+    [Export]
+    public Node2D? RelativeTo { get; set; }
+
     public override void _Ready()
     {
         points = new(MaxVerticies);
@@ -43,7 +46,12 @@ public partial class PathRenderer : Node2D
             timer = 0f;
 
             if (points.Count > maxVerticies) points.RemoveAt(0);
-            points.Add(GlobalPosition);
+
+            var position = GlobalPosition;
+            if (RelativeTo is not null)
+                position -= RelativeTo.GlobalPosition;
+
+            points.Add(position);
         }
 
         QueueRedraw();
@@ -65,6 +73,12 @@ public partial class PathRenderer : Node2D
                 Color.G,
                 Color.B,
                 Color.A * alpha);
+
+            if (RelativeTo is not null)
+            {
+                a += RelativeTo.GlobalPosition;
+                b += RelativeTo.GlobalPosition;
+            }
 
             DrawLine(
                 a - GlobalPosition,
