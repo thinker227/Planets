@@ -1,6 +1,5 @@
 namespace Planets;
 
-[Tool]
 public partial class PathRenderer : Node2D
 {
     private List<Vector2>? points = null;
@@ -31,14 +30,12 @@ public partial class PathRenderer : Node2D
 
     public override void _Ready()
     {
-        if (Engine.IsEditorHint()) return;
-
         points = new(MaxVerticies);
     }
 
     public override void _Process(double delta)
     {
-        if (points is null || Engine.IsEditorHint()) return;
+        if (points is null) return;
 
         timer += (float)delta;
         if (timer >= VertexFrequency)
@@ -54,7 +51,7 @@ public partial class PathRenderer : Node2D
 
     public override void _Draw()
     {
-        if (points is null || Engine.IsEditorHint()) return;
+        if (points is null) return;
 
         var count = points.Count;
         for (var i = 1; i < count; i++)
