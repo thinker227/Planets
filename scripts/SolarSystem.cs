@@ -5,9 +5,16 @@ public partial class SolarSystem : Node2D
 {
     private readonly List<Planet> planets = new();
     private Camera camera = null!;
+    
+    private SimulatedPlanet[] simulatedPlanets = null!;
+    private PhysPlanet[] physPlanets = null!;
+    private Vector2[][] simPoints = null!;
 
     [Export]
 	public required float Gravity { get; set; }
+
+    [Export]
+    public SystemSimulation? Simulation { get; set; }
 
     public Camera Camera => camera;
 
@@ -18,6 +25,16 @@ public partial class SolarSystem : Node2D
         camera = GetNode<Camera>("SystemCamera");
 
         AddPlanetDescendantsOfNode(this);
+
+        if (Simulation is not null)
+        {
+            simulatedPlanets = new SimulatedPlanet[Planets.Count];
+            physPlanets = new PhysPlanet[Planets.Count];
+            simPoints = new Vector2[Planets.Count][];
+
+            for (var i = 0; i < simPoints.Length; i++)
+                simPoints[i] = new Vector2[Simulation.Steps];
+        }
     }
 
     private void AddPlanetDescendantsOfNode(Node node)
@@ -27,5 +44,98 @@ public partial class SolarSystem : Node2D
 
         foreach (var child in node.GetChildren())
             AddPlanetDescendantsOfNode(child);
+    }
+
+    public override void _Process(double delta)
+    {
+        if (Simulation is null) return;
+
+        QueueRedraw();
+    }
+
+    public override void _Draw()
+    {
+        if (Simulation is null) return;
+
+        // Initialize simulated planets.
+        for (var i = 0; i < planets.Count; i++)
+        {
+            var planet = Planets[i];
+            simulatedPlanets[i] = new(planet);
+            physPlanets[i] = new(planet.GlobalPosition, planet.Mass);
+        }
+
+        for (var step = 0; step < Simulation.Steps; step++)
+        {
+            // Update motions.
+            for (var i = 0; i < planets.Count; i++)
+            {
+                ref var planet = ref simulatedPlanets[i];
+
+                planet.Motion += Planet.CalculateMotion(
+                    new(planet.Position, planet.Mass),
+                    physPlanets,
+                    Gravity,
+                    planet.Falloff,
+                    Simulation.TimeDelta);
+            }
+
+            // Update positions.
+            for (var i = 0; i < planets.Count; i++)
+            {
+                ref var planet = ref simulatedPlanets[i];
+
+                var position = planet.Position + planet.Motion * Simulation.TimeDelta;
+
+                planet.Position = position;
+                physPlanets[i] = physPlanets[i] with
+                {
+                    Position = planet.Position
+                };
+
+                simPoints[i][step] = position;
+            }
+        }
+
+        // Draw lines
+        for (var step = 1; step < Simulation.Steps; step++)
+        {
+            for (var i = 0; i < planets.Count; i++)
+            {
+                var from = simPoints[i][step - 1];
+                var to = simPoints[i][step];
+
+                var alpha = (Simulation.Steps - step) / (float)Simulation.Steps;
+                var color = Simulation.OrbitColor with
+                {
+                    A = Simulation.OrbitColor.A * alpha
+                };
+
+                DrawLine(
+                    from,
+                    to,
+                    color,
+                    Simulation.OrbitWidth);
+            }
+        }
+    }
+
+    private struct SimulatedPlanet
+    {
+        public float Mass { get; }
+
+        public GravityFalloff Falloff { get; }
+
+        public Vector2 Position { get; set; }
+
+        public Vector2 Motion { get; set; }
+
+        public SimulatedPlanet(Planet other)
+        {
+            Mass = other.Mass;
+            Falloff = other.Falloff;
+            Position = other.GlobalPosition;
+            Motion = other.Motion;
+        }
     }
 }
