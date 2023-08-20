@@ -9,6 +9,7 @@ public enum GravityFalloff
 public interface IPlanet
 {
     float Mass { get; }
+    GravityFalloff Falloff { get; }
     Vector2 Position { get; }
 }
 
