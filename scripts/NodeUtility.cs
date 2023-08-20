@@ -16,7 +16,6 @@ public static class NodeUtility
             current = current.GetParent();
         }
 
-        throw new InvalidOperationException(
-            $"Node {node.Name} does not have an ancestor of type {typeof(T).FullName}");
+        return null;
     }
 }

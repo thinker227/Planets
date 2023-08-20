@@ -16,7 +16,6 @@ public partial class SolarSystem : Node2D
     public override void _Ready()
     {
         camera = GetNode<Camera>("SystemCamera");
-        PrintExpr(camera);
 
         AddPlanetDescendantsOfNode(this);
     }
