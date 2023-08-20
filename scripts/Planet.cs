@@ -9,15 +9,17 @@ public enum GravityFalloff
 public interface IPlanet
 {
     float Mass { get; }
-    GravityFalloff Falloff { get; }
     Vector2 Position { get; }
 }
+
+public readonly record struct PhysPlanet(Vector2 Position, float Mass);
 
 [Tool]
 public partial class Planet : Node2D, IPlanet
 {
     private SolarSystem? system = null;
     private Label label = null!;
+    private PhysPlanet[]? bodies = null;
 
 
     [Export]
@@ -66,9 +68,17 @@ public partial class Planet : Node2D, IPlanet
     {
         if (system is null || Engine.IsEditorHint()) return;
 
+        // Update physics bodies used in calculations.
+        bodies ??= new PhysPlanet[system.Planets.Count];
+        for (var i = 0; i < bodies.Length; i++)
+        {
+            var other = system.Planets[i];
+            bodies[i] = new(other.GlobalPosition, other.Mass);
+        }
+
         Motion += CalculateMotion(
-            this,
-            system.Planets,
+            new(GlobalPosition, Mass),
+            bodies,
             system.Gravity,
             Falloff,
             (float)delta);
@@ -77,8 +87,8 @@ public partial class Planet : Node2D, IPlanet
     }
 
     public static Vector2 CalculateMotion(
-        IPlanet planet,
-        IEnumerable<IPlanet> attractors,
+        PhysPlanet planet,
+        IEnumerable<PhysPlanet> attractors,
         float gravity,
         GravityFalloff mode,
         float timeDelta)
@@ -88,8 +98,8 @@ public partial class Planet : Node2D, IPlanet
         foreach (var attractor in attractors)
         {
             var force = CalculateForce(
-                (planet.Position, planet.Mass),
-                (attractor.Position, attractor.Mass),
+                planet,
+                attractor,
                 gravity,
                 mode);
 
@@ -101,8 +111,8 @@ public partial class Planet : Node2D, IPlanet
     }
 
     public static Vector2 CalculateForce(
-        (Vector2 position, float mass) a,
-        (Vector2 position, float mass) b,
+        PhysPlanet a,
+        PhysPlanet b,
         float gravity,
         GravityFalloff mode)
     {
@@ -110,13 +120,13 @@ public partial class Planet : Node2D, IPlanet
 
         var distance = mode switch
         {
-            GravityFalloff.InverseSquare => a.position.DistanceSquaredTo(b.position),
-            GravityFalloff.InverseLinear => a.position.DistanceTo(b.position),
+            GravityFalloff.InverseSquare => a.Position.DistanceSquaredTo(b.Position),
+            GravityFalloff.InverseLinear => a.Position.DistanceTo(b.Position),
             _ => throw new System.Diagnostics.UnreachableException(),
         };
-        var masses = a.mass * b.mass;
+        var masses = a.Mass * b.Mass;
         var force = gravity * (masses / distance);
-        var direction = (b.position - a.position).Normalized();
+        var direction = (b.Position - a.Position).Normalized();
         return direction * force;
     }
 
@@ -128,8 +138,8 @@ public partial class Planet : Node2D, IPlanet
         foreach (var attractor in system.Planets)
         {
             var force = CalculateForce(
-                (GlobalPosition, Mass),
-                (attractor.GlobalPosition, attractor.Mass),
+                new(GlobalPosition, Mass),
+                new(attractor.GlobalPosition, attractor.Mass),
                 system.Gravity,
                 Falloff);
 
