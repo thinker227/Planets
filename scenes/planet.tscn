@@ -20,6 +20,7 @@ Mass = 1.0
 [node name="PathRenderer" type="Node2D" parent="."]
 script = ExtResource("2_awd73")
 VertexFrequency = 0.1
+metadata/_edit_lock_ = true
 
 [node name="Label" type="Label" parent="."]
 offset_left = -113.0
@@ -30,3 +31,4 @@ label_settings = SubResource("LabelSettings_xulhh")
 horizontal_alignment = 1
 vertical_alignment = 1
 autowrap_mode = 2
+metadata/_edit_lock_ = true
