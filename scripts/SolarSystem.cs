@@ -43,7 +43,7 @@ public partial class SolarSystem : Node2D
         {
             var planet = Planets[i];
 
-            var mass = planet.IsProcessing()
+            var mass = planet.Enabled
                 ? planet.Mass
                 // If planet isn't active then it shouldn't affect other planets.
                 : 0;
@@ -56,7 +56,7 @@ public partial class SolarSystem : Node2D
         {
             var planet = Planets[i];
 
-            if (!planet.IsProcessing()) continue;
+            if (!planet.Enabled) continue;
 
             planet.Motion += Planet.CalculateMotion(
                 physPlanets[i],
@@ -71,7 +71,7 @@ public partial class SolarSystem : Node2D
         {
             var planet = Planets[i];
 
-            if (!planet.IsProcessing()) continue;
+            if (!planet.Enabled) continue;
 
             planet.Position += planet.Motion * (float)delta;
         }

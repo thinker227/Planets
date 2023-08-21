@@ -24,6 +24,9 @@ public partial class Planet : Node2D
     public GravityFalloff Falloff { get; set; } = GravityFalloff.InverseSquare;
 
     [Export]
+    public bool Enabled { get; set; } = true;
+
+    [Export]
     public string? Title { get; set; }
 
     public override void _Ready()
