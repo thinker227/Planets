@@ -18,20 +18,33 @@ public partial class SolarSystem : Node2D
     {
         camera = GetNode<Camera>("SystemCamera");
 
-        AddPlanetDescendantsOfNode(this);
+        ChildEnteredTree += AddPlanet;
+        ChildExitingTree += RemovePlanet;
 
-        if (Engine.IsEditorHint()) return;
+        foreach (var child in GetChildren())
+        {
+            if (child is Planet planet) planets.Add(planet);
+        }
 
-        physPlanets = new PhysPlanet[Planets.Count];
+        physPlanets = new PhysPlanet[planets.Count];
     }
 
-    private void AddPlanetDescendantsOfNode(Node node)
+    private void AddPlanet(Node node)
     {
-        if (node is Planet planet)
-            planets.Add(planet);
+        if (node is not Planet planet) return;
 
-        foreach (var child in node.GetChildren())
-            AddPlanetDescendantsOfNode(child);
+        if (planets.Contains(planet)) return;
+
+        planets.Add(planet);
+        physPlanets = new PhysPlanet[planets.Count];
+    }
+
+    private void RemovePlanet(Node node)
+    {
+        if (node is not Planet planet) return;
+
+        planets.Remove(planet);
+        physPlanets = new PhysPlanet[planets.Count];
     }
 
     public override void _PhysicsProcess(double delta)
