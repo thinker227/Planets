@@ -17,9 +17,14 @@ public partial class EditorOrbitRenderer : Node2D
     [Export(PropertyHint.Range, "0,1000,or_greater")]
     public float OrbitWidth { get; set; } = 3;
 
+    [Export]
+    public bool RenderInGame { get; set; }
+
+    private bool ShouldRender => RenderInGame || Engine.IsEditorHint();
+
     public override void _Ready()
     {
-        if (!Engine.IsEditorHint())
+        if (!ShouldRender)
         {
             QueueFree();
             return;
@@ -38,14 +43,14 @@ public partial class EditorOrbitRenderer : Node2D
 
     public override void _Process(double delta)
     {
-        if (!Engine.IsEditorHint()) return;
+        if (!ShouldRender) return;
 
         QueueRedraw();
     }
 
     public override void _Draw()
     {
-        if (!Engine.IsEditorHint()) return;
+        if (!ShouldRender) return;
 
         var planets = system.Planets;
 
