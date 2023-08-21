@@ -80,12 +80,12 @@ public partial class EditorOrbitRenderer : Node2D
                     system.Gravity,
                     planet.Falloff,
                     TimeDelta);
-            // }
+            }
 
-            // // Update positions.
-            // for (var i = 0; i < planets.Count; i++)
-            // {
-                // ref var planet = ref simulatedPlanets[i];
+            // Update positions.
+            for (var i = 0; i < planets.Count; i++)
+            {
+                ref var planet = ref simulatedPlanets[i];
 
                 var position = planet.Position + planet.Motion * TimeDelta;
 

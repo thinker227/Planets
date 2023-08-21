@@ -13,8 +13,6 @@ public partial class Planet : Node2D
 {
     private SolarSystem? system = null;
     private Label label = null!;
-    private PhysPlanet[]? bodies = null;
-
 
     [Export]
     public Vector2 Motion { get; set; }
@@ -54,28 +52,6 @@ public partial class Planet : Node2D
         }
 
         QueueRedraw();
-    }
-
-    public override void _PhysicsProcess(double delta)
-    {
-        if (system is null || Engine.IsEditorHint()) return;
-
-        // Update physics bodies used in calculations.
-        bodies ??= new PhysPlanet[system.Planets.Count];
-        for (var i = 0; i < bodies.Length; i++)
-        {
-            var other = system.Planets[i];
-            bodies[i] = new(other.GlobalPosition, other.Mass);
-        }
-
-        Motion += CalculateMotion(
-            new(GlobalPosition, Mass),
-            bodies,
-            system.Gravity,
-            Falloff,
-            (float)delta);
-
-        Position += Motion * (float)delta;
     }
 
     public static Vector2 CalculateMotion(
