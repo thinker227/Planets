@@ -69,19 +69,19 @@ public partial class SolarSystem : Node2D
                     Gravity,
                     planet.Falloff,
                     Simulation.TimeDelta);
-            }
+            // }
 
-            // Update positions.
-            for (var i = 0; i < planets.Count; i++)
-            {
-                ref var planet = ref simulatedPlanets[i];
+            // // Update positions.
+            // for (var i = 0; i < planets.Count; i++)
+            // {
+                // ref var planet = ref simulatedPlanets[i];
 
                 var position = planet.Position + planet.Motion * Simulation.TimeDelta;
 
                 planet.Position = position;
                 physPlanets[i] = physPlanets[i] with
                 {
-                    Position = planet.Position
+                    Position = position
                 };
 
                 simPoints[i][step] = position;
